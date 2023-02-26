@@ -1,7 +1,7 @@
 #include <algorithm>
 #include <chrono>
 #include <iostream>
-#include "summations.h"
+#include "Summations.h"
 
 using std::chrono::high_resolution_clock;
 using std::chrono::duration_cast;

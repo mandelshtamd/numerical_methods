@@ -3,7 +3,7 @@
 #include <iomanip>
 #include <vector>
 #include <cmath>
-#include "summations.h"
+#include "Summations.h"
 #include "Statistics.h"
 #include "VectorLengthComputer.h"
 
