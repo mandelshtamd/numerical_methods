@@ -1,4 +1,3 @@
-#include <algorithm>
 #include <chrono>
 #include <iostream>
 #include "Summations.h"
@@ -46,24 +45,23 @@ float Summations::naive_sum(const float* x, int n, bool is_debug) {
 #pragma GCC optimize ("O3")
 float Summations::pairwise_sum_simd(float* x, int n) {
     auto t1 = high_resolution_clock::now();
-    std::sort(x, x + n);
-    std::reverse(x, x + n);
 
-    size_t current_length = n;
-    while (current_length > 1) {
-        #pragma omp simd
-        for (int i = 0; i * 2 + 1 < current_length; i++) {
-            x[i] = x[i * 2] + x[i * 2 + 1];
-        }
-        if (current_length % 2 == 1) {
-            x[current_length / 2] = x[current_length - 1];
-        }
-        current_length = (current_length + 1) / 2;
-    }
+    float result = pairwise_sum_simd_private(x, n);
 
     auto t2 = high_resolution_clock::now();
     duration<double, std::milli> ms = t2 - t1;
     std::clog << "Log | Pairwise summation execution time: " << ms.count() << std::endl;
 
-    return x[0];
+    return result;
+}
+
+float Summations::pairwise_sum_simd_private(float* x, int n) {
+    if (n == 1) {
+        return x[0];
+    }
+#pragma omp simd
+    for (int i = 0; i < n / 2; i++) {
+        x[i] += x[i + (n + 1) / 2];
+    }
+    return pairwise_sum_simd_private(x, (n + 1) / 2);
 }
